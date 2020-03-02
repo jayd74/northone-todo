@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { map } from 'lodash'
+import styled from 'styled-components'
+import { map, groupBy, sortBy, orderBy } from 'lodash'
 
 // Firebase dependencies
 import * as firebase from "firebase/app";
@@ -27,6 +28,8 @@ const ToDoList = () => {
   const [editItem, setEditItem] = useState('')
   const dbItem = key => firebase.database().ref(`/list/${key}`)
 
+  const sortedList = sortBy(list, 'completed')
+
   useEffect(() => {
     const dbref = firebase.database().ref('/list/')
     dbref.on('value', (snapshot) => {
@@ -52,7 +55,7 @@ const ToDoList = () => {
 
   return <>
     <List>
-      {map(list, item => {
+      {map(sortedList, item => {
         const { key, completed, taskName, description, date } = item
         return editItem === key ? <ItemFields key={key} editItem={editItem} setEditItem={setEditItem} item={item} /> : (
           <ListItem key={key} role={undefined} dense button>
@@ -61,13 +64,15 @@ const ToDoList = () => {
                 edge="start"
                 checked={completed}
                 disableRipple
+                color="primary"
                 inputProps={{ 'aria-labelledby': key }}
                 onChange={() => toggleCheck(item)}
               />
             </ListItemIcon>
-            <ListItemText
+            <StyledListItemText
               id={key}
-              primary={taskName || 'Untitled'}
+              completed={completed}
+              primary={<Task>{taskName}</Task> || 'Untitled'}
               secondary={
                 <>
                   <Typography
@@ -81,8 +86,8 @@ const ToDoList = () => {
                 </>
               }
             />
-            <EditIcon onClick={() => toggleEdit(key)} />
-            <DeleteIcon onClick={() => deleteItem(key)} />
+            <EditIcon onClick={() => toggleEdit(key)} color="primary" />
+            <DeleteIcon onClick={() => deleteItem(key)}  />
           </ListItem>
         )
       })}
@@ -91,3 +96,13 @@ const ToDoList = () => {
 }
 
 export default ToDoList
+
+const Task = styled.span`
+  font-weight: bold;
+  font-size: 18px;
+`
+
+const StyledListItemText = styled(ListItemText)`
+  text-decoration: ${({completed}) => completed ? 'line-through' : null};
+  opacity: ${({ completed }) => completed ? '0.25' : '1'};
+`

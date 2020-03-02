@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import styled from 'styled-components'
 import moment from 'moment'
 import MomentUtils from '@date-io/moment';
 
@@ -50,7 +51,7 @@ const ItemFields = ({ editItem, setEditItem, item}) => {
   }
 
   return <>
-    <form noValidate autoComplete="off">
+    <Item noValidate autoComplete="off">
       <TextField id="task-name" label="Task" variant="outlined" onChange={handleTaskName} value={taskName} />
       <TextField id="description" label="Description" multiline variant="outlined" onChange={handleDescription} value={description} />
 
@@ -71,16 +72,42 @@ const ItemFields = ({ editItem, setEditItem, item}) => {
       </MuiPickersUtilsProvider>
 
       {editItem ? <CheckIcon onClick={() => updateItem(item)} />
-        : <Button
+        : <AddButton
           variant="contained"
-          color="secondary"
+          color="primary"
           startIcon={<PostAddIcon />}
           onClick={() => addItem()}
         >
           Add Item
-        </Button>}
-    </form>
+        </AddButton>}
+    </Item>
   </>
 }
 
 export default ItemFields
+
+
+const AddButton = styled(Button)`
+  &:hover {
+    background: darkgreen;
+  }
+`
+
+const Item = styled.form`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px;
+
+  ${AddButton} {
+    background: #3f51b5;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+
+    &:hover {
+      background: darkblue;
+    }
+  }
+`
