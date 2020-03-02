@@ -1,12 +1,11 @@
 import React from 'react';
-import ToDoList from './components/ToDoList';
-import ItemFields from './components/ItemFields';
+import Nav from './components/Nav'
 
 const App = () => {
+
   return <>
     <h2>Northone To do</h2>
-    <ItemFields />
-    <ToDoList />
+    <Nav />
   </>
 }
 

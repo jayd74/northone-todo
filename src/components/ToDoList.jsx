@@ -2,11 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { map, groupBy, sortBy, orderBy } from 'lodash'
 
-// Firebase dependencies
 import * as firebase from "firebase/app";
-import "firebase/analytics";
-import "firebase/database";
-import { firebaseConfig } from '../config/firebase'
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -20,32 +16,13 @@ import EditIcon from '@material-ui/icons/Edit';
 
 import ItemFields from '../components/ItemFields'
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-const ToDoList = () => {
-  const [list, setList] = useState([])
+const ToDoList = ({list, setList}) => {
   const [editItem, setEditItem] = useState('')
   const dbItem = key => firebase.database().ref(`/list/${key}`)
 
   const sortedList = sortBy(list, 'completed')
 
-  useEffect(() => {
-    const dbref = firebase.database().ref('/list/')
-    dbref.on('value', (snapshot) => {
-      const data = snapshot.val();
-      let state = []
-      for (let key in data) {
-        data[key].key = key;
-        state.push(data[key])
-      }
-
-      setList(state)
-    })
-  }, [])
-
   const toggleCheck = item => dbItem(item.key).update({ completed: !item.completed })
-
 
   const deleteItem = itemKey => dbItem(itemKey).remove();
 
